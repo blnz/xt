@@ -83,11 +83,6 @@
   <property name="xtJsrc" value="${top}/src/xt/java" />
 
   <!-- 
-    | source location of documentation files 
-    +-->
-  <property name="docsrc" value="${top}/src/docs" />
-
-  <!-- 
     | target location for compiling javadoc into 
     +-->
   <property name="javadocDir" value="${docs}/api"/>
@@ -103,17 +98,12 @@
 
   <!-- source distribution -->
   <target name="src-dist" 
-          depends="init, unzip, compile, docs, bin-dist">
-    <copy todir="${src-dist-dir}" file="${top}/README.txt" />
-    <copy todir="${src-dist-dir}" file="${top}/index.html" />
+          depends="init, compile, docs, bin-dist">
+    <copy todir="${src-dist-dir}" file="${top}/README" />
     <copy todir="${src-dist-dir}" file="${top}/copying.txt" />
     <copy todir="${src-dist-dir}" file="${top}/copyingjc.txt" />
     <copy todir="${src-dist-dir}" file="${top}/build.xml" />
     <copy todir="${src-dist-dir}" file="${top}/local.properties" />
-
-    <copy todir="${src-dist-dir}/docs">
-      <fileset dir="${docs}" />
-    </copy>
 
     <copy todir="${src-dist-dir}/src">
       <fileset dir="${src}" />
@@ -128,16 +118,12 @@
 
   <!-- binary distribution -->
   <target name="bin-dist" 
-          depends="init, unzip, compile, docs">
+          depends="init,  compile, docs">
 
-    <copy todir="${bin-dist-dir}" file="${top}/README.txt" />
+    <copy todir="${bin-dist-dir}" file="${top}/README" />
     <copy todir="${bin-dist-dir}" file="${top}/build.xml" />
     <copy todir="${bin-dist-dir}" file="${top}/local.properties" />
     
-    <copy todir="${bin-dist-dir}/docs">
-      <fileset dir="${docs}" />
-    </copy>
-
     <copy todir="${bin-dist-dir}/lib">
       <fileset dir="${lib}" />
     </copy>
@@ -190,7 +176,7 @@
     <echo message="top: ${top}" />
     <echo message="dist: ${dist}" />
     <echo message="javadocUptodate: ${javadocUptodate}" />
-    <echo message="unzip.done: ${unzip.done}" />
+
   </target>
 
   <!-- 
@@ -217,10 +203,6 @@
     <delete>
       <fileset dir="${lib}" includes="*.jar"/>
     </delete>
-
-    <delete file="${third-party}/unzipped" />
-
-    <ant dir="${src}/docs" target="clean" />
 
     <ant dir="testsuite" target="clean" />
     
@@ -272,8 +254,8 @@
   <!--
     | compiles documentation
     +-->
-  <target name="docs" depends="init, unzip, javadoc" >
-    <ant dir="${docsrc}" target="alldocs"/>
+  <target name="docs" depends="init,  javadoc" >
+
   </target>
 
   <!-- 
@@ -281,7 +263,7 @@
     +-->
   <target name="javadoc" 
     unless="javadocUptodate"
-    depends="init, unzip" >
+    depends="init" >
 
     <!-- if packageNames not sent in from caller then default to below -->
     <property name="packageNames" value="
@@ -314,31 +296,6 @@
 
   </target>
   
-  <!--
-    | assembles the ant components into our distribution
-    | for installing ECHO using ANT.
-    +-->
-  <target name="dist_ant" depends="init" >
-
-    <mkdir dir="${dist}/ant" />
-
-    <!-- overridable properties for installing and running 
-         from the distribution image -->
-    <copy file="${src}/scripts/install-time/local.properties"
-          tofile="${dist}/local.properties" 
-          filtering="true"/>
-
-    <copy file="${top}/build.sh" tofile="${dist}/install.sh" />
-    <copy file="${top}/build.bat" tofile="${dist}/install.bat" />
-
-    <!-- "all" the jar files any installation needs for running ANT -->
-    <mkdir dir="${dist}/ant/lib" />
-    <copy todir="${dist}/ant/lib" >
-      <fileset dir="${top}/ant/lib"/>
-    </copy>
-
-  </target>
-
   <!-- 
     |ensures that local build properties are defined
     +-->
