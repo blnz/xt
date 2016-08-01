@@ -60,14 +60,6 @@
     +-->
   <property name="lib" value="${top}/lib" />
 
-  <!-- 
-    | define which jar files are shipped with a distribution
-    +-->
-  <fileset id="distJars" 
-           dir="${lib}" 
-           includes="*.jar">
-  </fileset>
-  
   <!--
     | define which jar files are available during compilation
     +-->
@@ -179,18 +171,6 @@
 
   </target>
 
-  <!-- 
-    | unzip third party packages we need for compiling,
-    | instaling or running
-    +-->
-  <target name="unzip" depends="init" 
-    unless="unzip.done" >
-    
-    <ant dir="${third-party}" target="unzipall">
-      <property name="lib" value="${lib}" />
-    </ant>
-  </target>
-
   <!--
     | Clean out the staging and distribution directory
     +-->
@@ -246,7 +226,12 @@
     <!-- jar it up -->
     <jar jarfile="${stage}/xt${version}.jar" 
          basedir="${stage}/xt"
-         includes="**/*" />
+         includes="**/*" >
+      <manifest>
+        <attribute name="Main-Class"
+                   value="com.blnz.xsl.trax.XTwice"/>
+      </manifest>
+    </jar>
     <copy todir="${lib}" file="${stage}/xt${version}.jar"/>
   </target>
 
